@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    name: Build, test & static analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # ---- PR: тесты только по затронутым модулям ----
+      - name: Determine changed modules
+        id: changed
+        if: github.event_name == 'pull_request'
+        run: |
+          BASE_REF="${{ github.event.pull_request.base.ref }}"
+          git fetch origin "$BASE_REF" --depth=1
+          MERGE_BASE=$(git merge-base HEAD "origin/$BASE_REF")
+          MODULES=""
+          for f in $(git diff --name-only "$MERGE_BASE...HEAD"); do
+            d=$(dirname "$f")
+            while [ "$d" != "." ] && [ ! -f "$d/build.gradle.kts" ] && [ ! -f "$d/build.gradle" ]; do
+              d=$(dirname "$d")
+            done
+            if [ -f "$d/build.gradle.kts" ] || [ -f "$d/build.gradle" ]; then
+              MODULES="$MODULES,$(basename "$d")"
+            fi
+          done
+          MODULES=${MODULES#,}
+          echo "modules=$MODULES"
+          echo "modules=$MODULES" >> "$GITHUB_OUTPUT"
+
+      - name: Run affected module tests
+        if: github.event_name == 'pull_request'
+        run: |
+          MODULES="${{ steps.changed.outputs.modules }}"
+          if [ -z "$MODULES" ]; then
+            ./gradlew affectedTests
+          else
+            ./gradlew affectedTests -PchangedModules="$MODULES"
+          fi
+
+      # ---- main: все тесты ----
+      - name: Run all tests
+        if: github.event_name == 'push'
+        run: ./gradlew test
+
+      # ---- всегда: статика и сборка ----
+      - name: Static analysis and assemble
+        run: ./gradlew detekt :app:assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk

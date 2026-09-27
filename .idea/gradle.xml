@@ -5,11 +5,19 @@
       <GradleProjectSettings>
         <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/common-ui" />
+            <option value="$PROJECT_DIR$/sources/commons/common-tea" />
+            <option value="$PROJECT_DIR$/sources/commons/common-ui" />
+            <option value="$PROJECT_DIR$/sources/table/data" />
+            <option value="$PROJECT_DIR$/sources/table/domain" />
+            <option value="$PROJECT_DIR$/sources/table/feature-input-api" />
+            <option value="$PROJECT_DIR$/sources/table/feature-input-impl" />
+            <option value="$PROJECT_DIR$/sources/table/feature-table-api" />
+            <option value="$PROJECT_DIR$/sources/table/feature-table-impl" />
           </set>
         </option>
       </GradleProjectSettings>

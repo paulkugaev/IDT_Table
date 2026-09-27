@@ -1,4 +1,4 @@
-package com.badmanners.idttable
+package com.badmanners.common_ui
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
