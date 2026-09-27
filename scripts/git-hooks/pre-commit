@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+# Pre-commit hook: run detekt on the whole project when staged changes touch Kotlin/Gradle files.
+# Registered via `git config core.hooksPath scripts/git-hooks` so the script stays under version control.
+
+staged_kotlin=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(kt|kts)$' || true)
+
+if [ -z "$staged_kotlin" ]; then
+  exit 0
+fi
+
+echo "Running detekt on staged changes..."
+./gradlew detekt --console=plain
