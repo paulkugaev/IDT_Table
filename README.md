@@ -53,6 +53,41 @@ highlights a cell (green), a double click edits its text.
 
 Dependency arrows point inward — toward `domain` as the cleanest layer.
 
+### TEA data flow (within a screen)
+
+Each screen is a `StoreViewModel` (a plain `ViewModel`) hosting a pure `TeaStore`. The UI only
+dispatches `UiEvent`s; side effects are described as `Command`s, run by `CommandsFlowHandler`s and
+fed back into the reducer as `CommandResultEvent`s.
+
+```
+            UI
+             │  dispatch(UiEvent)
+             ▼
+   ┌───────────────────────────┐
+   │      StoreViewModel       │  Android host (extends ViewModel),
+   │   (Store<State, ...>)     │  store launched in viewModelScope
+   └────────────┬──────────────┘
+                │  update(state, event)
+                ▼
+   ┌───────────────────────────┐
+   │          TeaStore         │  pure reducer (Update):
+   │   state{} · commands() ·  │  produces next State / Commands / News
+   │   news()                  │
+   └───────┬─────────────┬─────┘
+           │ commands    │ news
+           ▼             ▼
+   ┌──────────────┐      one-shot events
+   │   Command    │      (navigation, toast)
+   │ side effect  │
+   └──────┬───────┘
+          │  CommandsFlowHandler (async)
+          ▼
+   CommandResultEvent ──────────► update() again
+```
+
+The reducer is a pure function — `state` and `news` are `StateFlow`/`Flow` exposed by the
+`StoreViewModel`, so every screen is fully unit-testable without Android.
+
 ## Modules
 
 `app` · `common-ui` · `common-tea` · `domain` · `data` · `feature-input-api/impl` ·
@@ -60,14 +95,18 @@ Dependency arrows point inward — toward `domain` as the cleanest layer.
 
 ## Testing
 
-Unit tests live in the pure layers (`domain`, `data`):
+Unit tests live in the pure/engine layers (`common-tea`, `domain`, `data`):
 
 - **JUnit 4** — test runner and assertions
 - **MockK** — mocking (`every` / `verify` / `capture`) for the repository tests
-- **kotlinx-coroutines** — `runBlocking` for `suspend` repository tests
+- **kotlinx-coroutines** — `runBlocking`, `runTest` and `Dispatchers.setMain` for `suspend` and
+  coroutine-based tests
 
 Covered today:
 
+- **common-tea** — `TeaStore`: initial state, UiEvent→state transitions, UiEvent→news, command
+  results fed back into the reducer, initial commands; `StoreViewModel`: state/news/dispatch and
+  store lifecycle
 - `TableSizeValidator` — boundary values, empty/out-of-range inputs, mixed per-axis errors
 - `RandomStringDataSource` — length and alphabet contract
 - `TableDataDtoMapper` — DTO → domain mapping
