@@ -6,7 +6,7 @@ import com.badmanners.idttable.domain.model.TableDataDomain.TableRowDomain
 import com.badmanners.idttable.domain.model.TableDataDomain.TableRowDomain.TableCellDomain
 import javax.inject.Inject
 
-internal class TableDataDtoMapperImpl @Inject constructor() : TableDataDtoMapper {
+class TableDataDtoMapperImpl @Inject constructor() : TableDataDtoMapper {
 
     override fun toDomain(dto: TableDataDto): TableDataDomain =
         TableDataDomain(
