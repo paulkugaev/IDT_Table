@@ -12,9 +12,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private class TestStoreViewModel : StoreViewModel<TestState, TestEvent.UiEvent, TestNews>() {
+private class TestStoreViewModel : StoreViewModel<TestState, TestEvent, TestNews>() {
 
-    override fun createStore(): Store<TestState, TestEvent.UiEvent, TestNews> = testStore()
+    override fun createStore(): Store<TestState, TestEvent, TestNews> = testStore()
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)

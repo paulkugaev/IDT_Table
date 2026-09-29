@@ -7,7 +7,7 @@ import com.badmanners.idttable.domain.validator.TableSizeValidationState.RowsErr
 import com.badmanners.idttable.domain.validator.TableSizeValidationState.Valid
 import javax.inject.Inject
 
-internal class TableSizeValidatorImpl @Inject constructor() : TableSizeValidator {
+class TableSizeValidatorImpl @Inject constructor() : TableSizeValidator {
 
     override fun validate(rows: Int?, columns: Int?): TableSizeValidationState {
         val rowsError = when {
