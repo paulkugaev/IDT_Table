@@ -26,7 +26,7 @@ internal data class TestNews(val message: String)
 
 internal class TestUpdate : Update<TestState, TestEvent, TestCommand, TestNews>() {
 
-    override fun UpdateScope.update(event: TestEvent) {
+    override fun UpdateScope<TestState, TestCommand, TestNews>.update(event: TestEvent) {
         when (event) {
             is TestEvent.UiEvent.Increment -> state { copy(count = count + 1) }
             is TestEvent.UiEvent.Fail -> news(TestNews("boom"))
@@ -39,7 +39,7 @@ internal class TestUpdate : Update<TestState, TestEvent, TestCommand, TestNews>(
 
 internal fun testStore(
     initialCommands: List<TestCommand> = emptyList()
-): TeaStore<TestState, TestEvent, TestEvent.UiEvent, TestCommand, TestNews> = TeaStore(
+): TeaStore<TestState, TestEvent, TestCommand, TestNews> = TeaStore(
     initialState = TestState(),
     initialCommands = initialCommands,
     commandsFlowHandlers = listOf(

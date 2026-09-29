@@ -20,22 +20,23 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Default [Store] implementation. The [UiEvent] type is the subtype of [Event] that the UI is
- * allowed to [dispatch]; command results are ordinary [Event]s fed back from [CommandsFlowHandler]s.
+ * Default [Store] implementation. Both user-driven events and command results are ordinary
+ * [Event]s pushed into a single [events] channel, so [dispatch] accepts any [Event]; it is the
+ * reducer that distinguishes UI events from command results when needed.
  *
- * Both dispatched events and command results are pushed to a single [events] channel and applied
- * sequentially by one coroutine started in [launchIn], so state transitions never run concurrently.
- * Commands produced by [update] are broadcast to every [CommandsFlowHandler] subscriber. Initial
- * commands are re-emitted to each subscriber via [onSubscription], so they are never lost. A store
- * may be launched only once; [launchIn] fails otherwise.
+ * Both dispatched events and command results are applied sequentially by one coroutine started in
+ * [launchIn], so state transitions never run concurrently. Commands produced by [update] are
+ * broadcast to every [CommandsFlowHandler] subscriber. Initial commands are re-emitted to each
+ * subscriber via [onSubscription], so they are never lost. A store may be launched only once;
+ * [launchIn] fails otherwise.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class TeaStore<State : Any, Event : Any, UiEvent : Event, Command : Any, News : Any>(
+class TeaStore<State : Any, Event : Any, Command : Any, News : Any>(
     initialState: State,
     private val initialCommands: List<Command> = emptyList(),
-    private val commandsFlowHandlers: List<CommandsFlowHandler<Command, Event>>,
+    private val commandsFlowHandlers: List<CommandsFlowHandler<Command, Event>> = emptyList(),
     private val update: Update<State, Event, Command, News>
-) : Store<State, UiEvent, News> {
+) : Store<State, Event, News> {
 
     private val _state = MutableStateFlow(initialState)
     override val state: StateFlow<State> = _state.asStateFlow()
@@ -48,7 +49,7 @@ class TeaStore<State : Any, Event : Any, UiEvent : Event, Command : Any, News : 
 
     private val launched = AtomicBoolean(false)
 
-    override fun dispatch(event: UiEvent) {
+    override fun dispatch(event: Event) {
         events.trySend(event)
     }
 

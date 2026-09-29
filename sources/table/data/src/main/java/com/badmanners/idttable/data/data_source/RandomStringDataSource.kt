@@ -1,9 +1,8 @@
 package com.badmanners.idttable.data.data_source
 
-import javax.inject.Inject
 import kotlin.random.Random
 
-class RandomStringDataSource @Inject constructor(
+class RandomStringDataSource(
     private val random: Random = Random.Default,
     private val alphabet: CharArray = DEFAULT_ALPHABET,
     private val minLength: Int = 6,

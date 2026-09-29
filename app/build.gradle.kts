@@ -43,6 +43,10 @@ dependencies {
     implementation(project(":common-tea"))
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":feature-input-api"))
+    implementation(project(":feature-input-impl"))
+    implementation(project(":feature-table-api"))
+    implementation(project(":feature-table-impl"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

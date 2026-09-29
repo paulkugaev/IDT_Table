@@ -1,0 +1,9 @@
+<resources>
+    <string name="input_title">IDT Table</string>
+    <string name="input_rows_label">Rows</string>
+    <string name="input_columns_label">Columns</string>
+    <string name="input_build_button">Build table</string>
+    <string name="input_error_empty">Enter a value</string>
+    <string name="input_error_rows_out_of_range">Rows must be 1–1000</string>
+    <string name="input_error_columns_out_of_range">Columns must be 1–6</string>
+</resources>
