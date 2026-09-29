@@ -7,7 +7,7 @@ import com.badmanners.idttable.domain.model.TableDataDomain
 import com.badmanners.idttable.domain.repository.TableRepository
 import javax.inject.Inject
 
-internal class TableRepositoryImpl @Inject constructor(
+class TableRepositoryImpl @Inject constructor(
     private val dataSource: RandomStringDataSource,
     private val dtoMapper: TableDataDtoMapper
 ) : TableRepository {

@@ -1,6 +1,7 @@
 package com.badmanners.idttable.tea
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -10,11 +11,13 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private class TestStoreViewModel : StoreViewModel<TestState, TestEvent.UiEvent, TestNews>() {
 
     override fun createStore(): Store<TestState, TestEvent.UiEvent, TestNews> = testStore()
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class StoreViewModelTest {
 
     @After
