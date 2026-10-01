@@ -25,7 +25,7 @@ abstract class Update<State : Any, Event : Any, Command : Any, News : Any> {
  * [State], the [Command]s to run and the one-shot [News] to emit for a single [UpdateScope.update]
  * invocation.
  */
-class UpdateScope<State : Any, Command : Any, News : Any>(private val currentState: State) {
+class UpdateScope<State : Any, Command : Any, News : Any>(val currentState: State) {
 
     private var nextState: State? = null
     private val commandsList = mutableListOf<Command>()

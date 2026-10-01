@@ -70,13 +70,13 @@ class InputUpdateTest {
     }
 
     @Test
-    fun `invalid build sets showErrors and navigates nowhere`() = runTest {
+    fun `invalid build does not navigate`() = runTest {
         val store = store().also { it.launchIn(backgroundScope) }
 
         store.dispatch(InputEvent.UiEvent.RowsChanged("1001"))
         store.dispatch(InputEvent.UiEvent.BuildClicked)
+        testScheduler.runCurrent()
 
-        assertEquals(true, store.state.first { it.showErrors }.showErrors)
         verify(exactly = 0) { tableScreenProvider.tableScreen(any(), any()) }
     }
 

@@ -26,16 +26,11 @@ class InputUiEventUpdate(
             }
 
             UiEvent.BuildClicked -> {
-                var targetRows = 0
-                var targetColumns = 0
-                var isValid = false
-                state {
-                    targetRows = rows.toIntOrNull() ?: 0
-                    targetColumns = columns.toIntOrNull() ?: 0
-                    isValid = validation is TableSizeValidationState.Valid
-                    if (isValid) this else copy(showErrors = true)
-                }
+                val isValid = currentState.validation is TableSizeValidationState.Valid
+
                 if (isValid) {
+                    val targetRows = currentState.rows.toIntOrNull() ?: 0
+                    val targetColumns = currentState.columns.toIntOrNull() ?: 0
                     news(
                         InputNews.NavigateToTable(
                             tableScreenProvider.tableScreen(

@@ -1,10 +1,13 @@
 package com.badmanners.idttable.feature.input.impl.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,15 +16,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass
 import com.badmanners.common_ui.ui.theme.IDTTableTheme
 import com.badmanners.idttable.feature.input.impl.R
 import com.badmanners.idttable.feature.input.impl.presentation.events.InputEvent
+
+private val InputFormMaxWidth = 480.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,42 +51,81 @@ internal fun InputScreenContent(
             )
         }
     ) { innerPadding ->
-        Column(
+        val widthClass = currentWindowAdaptiveInfoV2().windowSizeClass
+        val formMaxWidth =
+            if (widthClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)) {
+                InputFormMaxWidth
+            } else {
+                Dp.Unspecified
+            }
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
         ) {
-            OutlinedTextField(
-                value = state.rows,
-                onValueChange = { dispatch(InputEvent.UiEvent.RowsChanged(it)) },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.input_rows_label)) },
-                singleLine = true,
-                isError = state.rowsError != null,
-                supportingText = state.rowsError?.let { { Text(it) } },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            InputForm(
+                state = state,
+                dispatch = dispatch,
+                formMaxWidth = formMaxWidth
             )
+        }
+    }
+}
 
-            OutlinedTextField(
-                value = state.columns,
-                onValueChange = { dispatch(InputEvent.UiEvent.ColumnsChanged(it)) },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.input_columns_label)) },
-                singleLine = true,
-                isError = state.columnsError != null,
-                supportingText = state.columnsError?.let { { Text(it) } },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+@Composable
+private fun InputForm(
+    state: InputUiState,
+    dispatch: (InputEvent) -> Unit,
+    formMaxWidth: Dp
+) {
+    val focusManager = LocalFocusManager.current
+    Column(
+        modifier = Modifier
+            .widthIn(max = formMaxWidth)
+            .fillMaxWidth()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        OutlinedTextField(
+            value = state.rows,
+            onValueChange = { dispatch(InputEvent.UiEvent.RowsChanged(it)) },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text(stringResource(R.string.input_rows_label)) },
+            singleLine = true,
+            isError = state.rowsError != null,
+            supportingText = state.rowsError?.let { { Text(it) } },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(onNext = {
+                focusManager.moveFocus(
+                    FocusDirection.Next
+                )
+            })
+        )
+
+        OutlinedTextField(
+            value = state.columns,
+            onValueChange = { dispatch(InputEvent.UiEvent.ColumnsChanged(it)) },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text(stringResource(R.string.input_columns_label)) },
+            singleLine = true,
+            isError = state.columnsError != null,
+            supportingText = state.columnsError?.let { { Text(it) } },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
             )
+        )
 
-            Button(
-                onClick = { dispatch(InputEvent.UiEvent.BuildClicked) },
-                enabled = state.buildEnabled,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.input_build_button))
-            }
+        Button(
+            onClick = { dispatch(InputEvent.UiEvent.BuildClicked) },
+            enabled = state.buildEnabled,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.input_build_button))
         }
     }
 }

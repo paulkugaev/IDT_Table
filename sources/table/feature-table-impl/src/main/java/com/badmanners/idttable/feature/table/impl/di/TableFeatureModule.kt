@@ -1,7 +1,7 @@
 package com.badmanners.idttable.feature.table.impl.di
 
 import com.badmanners.idttable.feature.table.api.TableFeatureScreenProvider
-import com.badmanners.idttable.feature.table.impl.TableFeatureScreenProviderImpl
+import com.badmanners.idttable.feature.table.impl.provider.TableFeatureScreenProviderImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

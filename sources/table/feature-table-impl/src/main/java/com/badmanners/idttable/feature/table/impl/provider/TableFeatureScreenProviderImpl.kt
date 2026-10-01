@@ -1,6 +1,7 @@
-package com.badmanners.idttable.feature.table.impl
+package com.badmanners.idttable.feature.table.impl.provider
 
 import com.badmanners.idttable.feature.table.api.TableFeatureScreenProvider
+import com.badmanners.idttable.feature.table.impl.ui.compose.TableScreen
 import com.github.terrakok.modo.Screen
 import javax.inject.Inject
 
