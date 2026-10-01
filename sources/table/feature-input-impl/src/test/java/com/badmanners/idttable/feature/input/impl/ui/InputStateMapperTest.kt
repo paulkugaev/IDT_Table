@@ -33,7 +33,6 @@ class InputStateMapperTest {
         val state = InputState(
             rows = "0",
             columns = "7",
-            showErrors = true,
             validation = Invalid(RowsError.OUT_OF_RANGE, ColumnsError.OUT_OF_RANGE)
         )
 
@@ -45,7 +44,7 @@ class InputStateMapperTest {
     }
 
     @Test
-    fun `empty error is hidden until submit attempt`() {
+    fun `empty input yields no error`() {
         val uiState = mapper.map(
             InputState(validation = Invalid(RowsError.EMPTY, ColumnsError.EMPTY))
         )

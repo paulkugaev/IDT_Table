@@ -122,6 +122,19 @@ Covered today:
 
 Requires JDK 21 (Gradle daemon).
 
+### About the `qa` build type
+
+The `qa` build type builds like `release` (minification/R8 on) but signs with the debug keystore,
+so it can be installed on a device:
+
+```bash
+./gradlew :app:assembleQa      # build the qa APK
+```
+
+Use it when the debug build lags while scrolling the table. The lag comes from the ART JIT
+warm-up of the debug build (unoptimized code); the release-like `qa` build compiles ahead of time
+and scrolls smoothly.
+
 ## Quality
 
 - **detekt** — wired into every module, a gate in CI.

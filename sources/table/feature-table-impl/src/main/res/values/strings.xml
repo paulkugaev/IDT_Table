@@ -1,3 +1,9 @@
 <resources>
-    <string name="table_placeholder_title">Table %1$d × %2$d</string>
+    <string name="table_title">Table</string>
+    <string name="table_back">Back</string>
+    <string name="table_edit_title">Edit cell</string>
+    <string name="table_edit_confirm">Save</string>
+    <string name="table_edit_cancel">Cancel</string>
+    <string name="table_error_load">Failed to load the table</string>
+    <string name="table_retry">Retry</string>
 </resources>

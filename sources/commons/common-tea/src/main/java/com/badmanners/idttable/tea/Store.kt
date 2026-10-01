@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
  * converts dispatched events into commands, runs them and feeds the results back as new events.
  * [launchIn] starts command processing in the given [scope].
  */
-interface Store<State : Any, Event : Any, News : Any> {
+interface Store<out State, in Event, out News> {
 
     val state: StateFlow<State>
 
